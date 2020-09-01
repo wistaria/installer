@@ -1,3 +1,57 @@
+diff -crN octa-8.3.orig/ENGINES/SUSHI10.54/Susi/include/seed2udf/udfobject.h octa-8.3/ENGINES/SUSHI10.54/Susi/include/seed2udf/udfobject.h
+*** octa-8.3.orig/ENGINES/SUSHI10.54/Susi/include/seed2udf/udfobject.h	Fri Oct  6 20:46:54 2017
+--- octa-8.3/ENGINES/SUSHI10.54/Susi/include/seed2udf/udfobject.h	Tue Sep  1 15:25:46 2020
+***************
+*** 201,207 ****
+  
+  class UDFstring : public UDFObject {
+  public:
+! 	UDFstring(const char *name="", char *val="");
+  
+  	string GetValue();
+  #ifdef USE_CONVERT
+--- 201,207 ----
+  
+  class UDFstring : public UDFObject {
+  public:
+! 	UDFstring(const char *name="", const char *val="");
+  
+  	string GetValue();
+  #ifdef USE_CONVERT
+***************
+*** 261,267 ****
+  	bool empty() const	{ return _array.empty();}
+  //////////// VECTOR_INTERFACE //////////////////////
+  	void reserve(size_t n)	{ _array.reserve(n);}
+! 	size_t capacity() const { _array.capacity();}
+  // interface to vector member
+      T & operator[](size_t pos)				{ return _array[pos];}
+  	const T & operator[](size_t pos) const	{ return _array[pos];}
+--- 261,267 ----
+  	bool empty() const	{ return _array.empty();}
+  //////////// VECTOR_INTERFACE //////////////////////
+  	void reserve(size_t n)	{ _array.reserve(n);}
+! 	size_t capacity() const { return _array.capacity();}
+  // interface to vector member
+      T & operator[](size_t pos)				{ return _array[pos];}
+  	const T & operator[](size_t pos) const	{ return _array[pos];}
+***************
+*** 377,383 ****
+  	bool empty() const	{ return _array.empty();}
+  //////////// VECTOR_INTERFACE //////////////////////
+  	void reserve(size_t n)	{ _array.reserve(n);}
+! 	size_t capacity() const { _array.capacity();}
+  // interface to vector member
+      T & operator[](size_t pos)				{ return _array[pos];}
+  	const T & operator[](size_t pos) const	{ return _array[pos];}
+--- 377,383 ----
+  	bool empty() const	{ return _array.empty();}
+  //////////// VECTOR_INTERFACE //////////////////////
+  	void reserve(size_t n)	{ _array.reserve(n);}
+! 	size_t capacity() const { return _array.capacity();}
+  // interface to vector member
+      T & operator[](size_t pos)				{ return _array[pos];}
+  	const T & operator[](size_t pos) const	{ return _array[pos];}
 diff -crN octa-8.3.orig/GOURMET/bin/linux_64/octa_configuration.sh octa-8.3/GOURMET/bin/linux_64/octa_configuration.sh
 *** octa-8.3.orig/GOURMET/bin/linux_64/octa_configuration.sh	Wed May 24 15:30:35 2017
 --- octa-8.3/GOURMET/bin/linux_64/octa_configuration.sh	Tue Sep  1 11:02:34 2020
@@ -18,6 +72,65 @@ diff -crN octa-8.3.orig/GOURMET/bin/linux_64/octa_configuration.sh octa-8.3/GOUR
   expr 'if [ $? = "0" ]; then' >> gourmetterm
   expr '  kterm&' >> gourmetterm
   expr 'else' >> gourmetterm
+diff -crN octa-8.3.orig/GOURMET/include/pfexception.h octa-8.3/GOURMET/include/pfexception.h
+*** octa-8.3.orig/GOURMET/include/pfexception.h	Sun May 28 15:03:52 2017
+--- octa-8.3/GOURMET/include/pfexception.h	Tue Sep  1 15:23:11 2020
+***************
+*** 86,93 ****
+  
+  // See "pferror.h"
+  #ifdef THROW_EXCEPTION
+! void CheckPfFunction(int PfFunction,char *file,int line) throw(PFException);
+! void PFError(int err, const char *info) throw(PFException);
+  #endif
+  
+  #endif
+--- 86,93 ----
+  
+  // See "pferror.h"
+  #ifdef THROW_EXCEPTION
+! void CheckPfFunction(int PfFunction,char *file,int line) noexcept(false);
+! void PFError(int err, const char *info) noexcept(false);
+  #endif
+  
+  #endif
+diff -crN octa-8.3.orig/GOURMET/include/udfobject.h octa-8.3/GOURMET/include/udfobject.h
+*** octa-8.3.orig/GOURMET/include/udfobject.h	Sun May 28 15:03:52 2017
+--- octa-8.3/GOURMET/include/udfobject.h	Tue Sep  1 15:23:18 2020
+***************
+*** 258,264 ****
+  	bool empty() const	{ return _array.empty();}
+  //////////// VECTOR_INTERFACE //////////////////////
+  	void reserve(size_t n)	{ _array.reserve(n);}
+! 	size_t capacity() const { _array.capacity();}
+  // interface to vector member
+      T & operator[](size_t pos)				{ return _array[pos];}
+  	const T & operator[](size_t pos) const	{ return _array[pos];}
+--- 258,264 ----
+  	bool empty() const	{ return _array.empty();}
+  //////////// VECTOR_INTERFACE //////////////////////
+  	void reserve(size_t n)	{ _array.reserve(n);}
+! 	size_t capacity() const { return _array.capacity();}
+  // interface to vector member
+      T & operator[](size_t pos)				{ return _array[pos];}
+  	const T & operator[](size_t pos) const	{ return _array[pos];}
+***************
+*** 374,380 ****
+  	bool empty() const	{ return _array.empty();}
+  //////////// VECTOR_INTERFACE //////////////////////
+  	void reserve(size_t n)	{ _array.reserve(n);}
+! 	size_t capacity() const { _array.capacity();}
+  // interface to vector member
+      T & operator[](size_t pos)				{ return _array[pos];}
+  	const T & operator[](size_t pos) const	{ return _array[pos];}
+--- 374,380 ----
+  	bool empty() const	{ return _array.empty();}
+  //////////// VECTOR_INTERFACE //////////////////////
+  	void reserve(size_t n)	{ _array.reserve(n);}
+! 	size_t capacity() const { return _array.capacity();}
+  // interface to vector member
+      T & operator[](size_t pos)				{ return _array[pos];}
+  	const T & operator[](size_t pos) const	{ return _array[pos];}
 diff -crN octa-8.3.orig/GOURMET/src/apilib/inc/pfexception.h octa-8.3/GOURMET/src/apilib/inc/pfexception.h
 *** octa-8.3.orig/GOURMET/src/apilib/inc/pfexception.h	Sun May 28 15:03:55 2017
 --- octa-8.3/GOURMET/src/apilib/inc/pfexception.h	Tue Sep  1 15:06:48 2020
@@ -77,6 +190,43 @@ diff -crN octa-8.3.orig/GOURMET/src/apilib/inc/udfobject.h octa-8.3/GOURMET/src/
   // interface to vector member
       T & operator[](size_t pos)				{ return _array[pos];}
   	const T & operator[](size_t pos) const	{ return _array[pos];}
+diff -crN octa-8.3.orig/GOURMET/src/apilib/src/pfexception.cpp octa-8.3/GOURMET/src/apilib/src/pfexception.cpp
+*** octa-8.3.orig/GOURMET/src/apilib/src/pfexception.cpp	Sun May 28 15:03:55 2017
+--- octa-8.3/GOURMET/src/apilib/src/pfexception.cpp	Tue Sep  1 15:30:19 2020
+***************
+*** 149,155 ****
+  }
+  
+  #ifdef THROW_EXCEPTION 
+! void CheckPfFunction(int status,char *file,int line) throw(PFException)
+  {
+    if (PFFailure(status)){
+  	throw	PFException(status);
+--- 149,155 ----
+  }
+  
+  #ifdef THROW_EXCEPTION 
+! void CheckPfFunction(int status,char *file,int line) noexcept(false)
+  {
+    if (PFFailure(status)){
+  	throw	PFException(status);
+***************
+*** 157,163 ****
+  }
+  
+  /* force to throw C++ Exception */
+! void PFError(int status, const char *info) throw(PFException)
+  {
+  	throw PFException(status, info);
+  }
+--- 157,163 ----
+  }
+  
+  /* force to throw C++ Exception */
+! void PFError(int status, const char *info) noexcept(false)
+  {
+  	throw PFException(status, info);
+  }
 diff -crN octa-8.3.orig/GOURMET/src/apilib/src/udfmanager.cpp octa-8.3/GOURMET/src/apilib/src/udfmanager.cpp
 *** octa-8.3.orig/GOURMET/src/apilib/src/udfmanager.cpp	Sun May 28 15:03:55 2017
 --- octa-8.3/GOURMET/src/apilib/src/udfmanager.cpp	Tue Sep  1 11:20:27 2020
