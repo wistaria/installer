@@ -1,0 +1,128 @@
+diff -crN octa-8.3.orig/GOURMET/bin/linux_64/octa_configuration.sh octa-8.3/GOURMET/bin/linux_64/octa_configuration.sh
+*** octa-8.3.orig/GOURMET/bin/linux_64/octa_configuration.sh	Wed May 24 15:30:35 2017
+--- octa-8.3/GOURMET/bin/linux_64/octa_configuration.sh	Tue Sep  1 11:02:34 2020
+***************
+*** 90,96 ****
+  expr 'if [ "$1" != "-" ]; then' >> gourmetterm
+  expr '#----- terminal -----------' >> gourmetterm
+  #expr 'export LANG=C' >> gourmetterm
+! expr 'type kterm >& /dev/null' >> gourmetterm
+  expr 'if [ $? = "0" ]; then' >> gourmetterm
+  expr '  kterm&' >> gourmetterm
+  expr 'else' >> gourmetterm
+--- 90,96 ----
+  expr 'if [ "$1" != "-" ]; then' >> gourmetterm
+  expr '#----- terminal -----------' >> gourmetterm
+  #expr 'export LANG=C' >> gourmetterm
+! expr 'type kterm > /dev/null 2>&1' >> gourmetterm
+  expr 'if [ $? = "0" ]; then' >> gourmetterm
+  expr '  kterm&' >> gourmetterm
+  expr 'else' >> gourmetterm
+diff -crN octa-8.3.orig/GOURMET/src/apilib/inc/pfexception.h octa-8.3/GOURMET/src/apilib/inc/pfexception.h
+*** octa-8.3.orig/GOURMET/src/apilib/inc/pfexception.h	Sun May 28 15:03:55 2017
+--- octa-8.3/GOURMET/src/apilib/inc/pfexception.h	Tue Sep  1 15:06:48 2020
+***************
+*** 86,93 ****
+  
+  // See "pferror.h"
+  #ifdef THROW_EXCEPTION
+! void CheckPfFunction(int PfFunction,char *file,int line) throw(PFException);
+! void PFError(int err, const char *info) throw(PFException);
+  #endif
+  
+  #endif
+--- 86,93 ----
+  
+  // See "pferror.h"
+  #ifdef THROW_EXCEPTION
+! void CheckPfFunction(int PfFunction,char *file,int line) noexcept(false);
+! void PFError(int err, const char *info) noexcept(false);
+  #endif
+  
+  #endif
+diff -crN octa-8.3.orig/GOURMET/src/apilib/inc/udfobject.h octa-8.3/GOURMET/src/apilib/inc/udfobject.h
+*** octa-8.3.orig/GOURMET/src/apilib/inc/udfobject.h	Sun May 28 15:03:55 2017
+--- octa-8.3/GOURMET/src/apilib/inc/udfobject.h	Tue Sep  1 15:07:01 2020
+***************
+*** 258,264 ****
+  	bool empty() const	{ return _array.empty();}
+  //////////// VECTOR_INTERFACE //////////////////////
+  	void reserve(size_t n)	{ _array.reserve(n);}
+! 	size_t capacity() const { _array.capacity();}
+  // interface to vector member
+      T & operator[](size_t pos)				{ return _array[pos];}
+  	const T & operator[](size_t pos) const	{ return _array[pos];}
+--- 258,264 ----
+  	bool empty() const	{ return _array.empty();}
+  //////////// VECTOR_INTERFACE //////////////////////
+  	void reserve(size_t n)	{ _array.reserve(n);}
+! 	size_t capacity() const { return _array.capacity();}
+  // interface to vector member
+      T & operator[](size_t pos)				{ return _array[pos];}
+  	const T & operator[](size_t pos) const	{ return _array[pos];}
+***************
+*** 374,380 ****
+  	bool empty() const	{ return _array.empty();}
+  //////////// VECTOR_INTERFACE //////////////////////
+  	void reserve(size_t n)	{ _array.reserve(n);}
+! 	size_t capacity() const { _array.capacity();}
+  // interface to vector member
+      T & operator[](size_t pos)				{ return _array[pos];}
+  	const T & operator[](size_t pos) const	{ return _array[pos];}
+--- 374,380 ----
+  	bool empty() const	{ return _array.empty();}
+  //////////// VECTOR_INTERFACE //////////////////////
+  	void reserve(size_t n)	{ _array.reserve(n);}
+! 	size_t capacity() const { return _array.capacity();}
+  // interface to vector member
+      T & operator[](size_t pos)				{ return _array[pos];}
+  	const T & operator[](size_t pos) const	{ return _array[pos];}
+diff -crN octa-8.3.orig/GOURMET/src/apilib/src/udfmanager.cpp octa-8.3/GOURMET/src/apilib/src/udfmanager.cpp
+*** octa-8.3.orig/GOURMET/src/apilib/src/udfmanager.cpp	Sun May 28 15:03:55 2017
+--- octa-8.3/GOURMET/src/apilib/src/udfmanager.cpp	Tue Sep  1 11:20:27 2020
+***************
+*** 59,71 ****
+  
+  UDFManager::~UDFManager()
+  {
+- 	try {
+  		if (fd->isOpen())
+  			fd->close();
+  		delete fd;
+- 	} catch (PFException &e) {
+- 		throw *new UDFManagerException(e.GetErrorMessage());
+- 	}
+  }
+  
+  // methods for UDF header information
+--- 59,67 ----
+diff -crN octa-8.3.orig/GOURMET/src/mgrcore/src/CacheManager.cpp octa-8.3/GOURMET/src/mgrcore/src/CacheManager.cpp
+*** octa-8.3.orig/GOURMET/src/mgrcore/src/CacheManager.cpp	Sun May 28 15:04:21 2017
+--- octa-8.3/GOURMET/src/mgrcore/src/CacheManager.cpp	Tue Sep  1 11:21:05 2020
+***************
+*** 73,79 ****
+  // function :	destructor
+  // return value: none
+  CacheManager::~CacheManager()
+! { try{
+  	_attr->clear();
+  	_define->clear();
+  	if(_fsmgr) delete _fsmgr;
+--- 73,79 ----
+  // function :	destructor
+  // return value: none
+  CacheManager::~CacheManager()
+! {
+  	_attr->clear();
+  	_define->clear();
+  	if(_fsmgr) delete _fsmgr;
+***************
+*** 87,93 ****
+  #ifdef CMGR_DEBUG
+  	debugPrint("~CacheManager");
+  #endif
+-  }catch(...){ throw CoreLibraryException("~CacheManager"); }
+  }
+  
+  // function : The target UDF file is specified.
+--- 87,92 ----
